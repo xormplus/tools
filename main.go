@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/oskca/sciter"
@@ -23,6 +24,7 @@ func main() {
 	ret = sciter.NewValue()
 	var err error
 	tool = new(Tool)
+
 	w, err = window.New(sciter.SW_MAIN|sciter.SW_GLASSY, &sciter.Rect{0, 0, 0, 0})
 
 	if err != nil {
@@ -30,8 +32,8 @@ func main() {
 	}
 	w.SetTitle("xorm tools")
 
-	//	w.LoadFile("tools.html")
-	err = w.LoadHtml(indexhtml, "/")
+	w.LoadFile("tools.html")
+	//	err = w.LoadHtml(indexhtml, "/")
 	if err != nil {
 		log.Fatal("Create Window Error: ", err)
 	}
@@ -82,11 +84,152 @@ func setEventHandler(w *window.Window) {
 				rsa.Bits = bits
 
 				DoRsa(rsa)
+			case 5:
+				rsa := &RsaEncrypt{}
+				if args[0].Get("rsaMode").Int() == 1 {
+					rsa.EncryptMode = MODE_PUBKEY_ENCRYPT
+					rsa.DecryptMode = MODE_PRIKEY_DECRYPT
+				} else {
+					rsa.EncryptMode = MODE_PRIKEY_ENCRYPT
+					rsa.DecryptMode = MODE_PUBKEY_DECRYPT
+				}
+				bits, err = strconv.Atoi(args[0].Get("bitwd").String())
+				if err != nil {
+					PutKey("pubkey", "<div style=\"color:#FF0000\">"+NowTime()+"  [错误日志]  内容：["+err.Error()+"]</div>")
+					return ret
+				}
+				rsa.Bits = bits
+				DoGenRsaPerm(rsa)
 
+			case 6:
+				rsa := &RsaEncrypt{}
+				rsa.EncryptMode = MODE_PUBKEY_ENCRYPT
+				rsa.DecryptMode = MODE_PRIKEY_DECRYPT
+				DoRsaModePubkeyEncrypt(rsa)
+
+			case 7:
+				rsa := &RsaEncrypt{}
+				rsa.EncryptMode = MODE_PRIKEY_ENCRYPT
+				rsa.DecryptMode = MODE_PUBKEY_DECRYPT
+				DoRsaModePrikeyEncrypt(rsa)
 			}
 
 			return returnCmd
 		})
+}
+
+func DoGenRsaPerm(rsaEncrypt *RsaEncrypt) {
+	root, err := w.GetRootElement()
+	if err != nil {
+		PutKey("pubkey", "<div style=\"color:#FF0000\">"+NowTime()+"  [错误日志]  内容：["+err.Error()+"]</div>")
+		root.CallFunction("enable", ret)
+		root.Update(false)
+		return
+	}
+
+	ClearKey()
+
+	err = rsaEncrypt.GenRsaKey(tool)
+	if err != nil {
+		PutKey("pubkey", "<div style=\"color:#FF0000\">"+NowTime()+"  [错误日志]  内容：["+err.Error()+"]</div>")
+		root.CallFunction("enable", ret)
+		root.Update(false)
+		return
+	}
+	PutKey("pubkey", rsaEncrypt.PubKey)
+	PutKey("prikey", rsaEncrypt.PriKey)
+
+	root.CallFunction("enable", ret)
+	root.Update(false)
+	return
+}
+
+func DoRsaModePubkeyEncrypt(rsaEncrypt *RsaEncrypt) {
+	root, err := w.GetRootElement()
+	if err != nil {
+		AppendMsg("<div style=\"color:#FF0000\">" + NowTime() + "  [错误日志]  内容：[" + err.Error() + "]</div>")
+		root.CallFunction("enable", ret)
+		root.Update(false)
+		return
+	}
+	ClearMsg()
+
+	resultElement, err := root.SelectById("inputPubkey")
+	if err != nil {
+		AppendMsg("<div style=\"color:#FF0000\">" + NowTime() + "  [错误日志]  内容：[" + err.Error() + "]</div>")
+		root.CallFunction("enable", ret)
+		root.Update(false)
+		return
+	}
+	pubkey, err := resultElement.Text()
+	if err != nil {
+		AppendMsg("<div style=\"color:#FF0000\">" + NowTime() + "  [错误日志]  内容：[" + err.Error() + "]</div>")
+		root.CallFunction("enable", ret)
+		root.Update(false)
+		return
+	}
+
+	//	log.Println(pubkey)
+	pubkey = strings.Replace(pubkey, "-----BEGIN PUBLIC KEY-----", "", -1)
+	pubkey = strings.Replace(pubkey, "-----END PUBLIC KEY-----", "", -1)
+	pubkey = strings.Replace(pubkey, " ", "\n", -1)
+	rsaEncrypt.PubKey = "-----BEGIN PUBLIC KEY-----" + pubkey + "-----END PUBLIC KEY-----"
+	//	log.Println(rsaEncrypt.PubKey)
+
+	err = filepath.Walk(tool.inputDir, rsaEncrypt.walkFunc)
+	if err != nil {
+		AppendMsg("<div style=\"color:#FF0000\">" + NowTime() + "  [错误日志]  内容：[" + err.Error() + "]</div>")
+		root.CallFunction("enable", ret)
+		root.Update(false)
+		return
+	}
+
+	root.CallFunction("enable", ret)
+	root.Update(false)
+	return
+}
+
+func DoRsaModePrikeyEncrypt(rsaEncrypt *RsaEncrypt) {
+	root, err := w.GetRootElement()
+	if err != nil {
+		AppendMsg("<div style=\"color:#FF0000\">" + NowTime() + "  [错误日志]  内容：[" + err.Error() + "]</div>")
+		root.CallFunction("enable", ret)
+		root.Update(false)
+		return
+	}
+	ClearMsg()
+
+	resultElement, err := root.SelectById("inputPrikey")
+	if err != nil {
+		AppendMsg("<div style=\"color:#FF0000\">" + NowTime() + "  [错误日志]  内容：[" + err.Error() + "]</div>")
+		root.CallFunction("enable", ret)
+		root.Update(false)
+		return
+	}
+	prikey, err := resultElement.Text()
+	if err != nil {
+		AppendMsg("<div style=\"color:#FF0000\">" + NowTime() + "  [错误日志]  内容：[" + err.Error() + "]</div>")
+		root.CallFunction("enable", ret)
+		root.Update(false)
+		return
+	}
+
+	prikey = strings.Replace(prikey, "-----BEGIN PRIVATE KEY-----", "", -1)
+	prikey = strings.Replace(prikey, "-----END PRIVATE KEY-----", "", -1)
+	prikey = strings.Replace(prikey, " ", "\n", -1)
+	rsaEncrypt.PriKey = "-----BEGIN PRIVATE KEY-----" + prikey + "-----END PRIVATE KEY-----"
+
+	err = filepath.Walk(tool.inputDir, rsaEncrypt.walkFunc)
+	if err != nil {
+		AppendMsg("<div style=\"color:#FF0000\">" + NowTime() + "  [错误日志]  内容：[" + err.Error() + "]</div>")
+		root.CallFunction("enable", ret)
+		root.Update(false)
+		return
+	}
+
+	root.CallFunction("enable", ret)
+	root.Update(false)
+	return
 }
 
 func DoAes(aesEncrypt *AesEncrypt) {
@@ -215,6 +358,50 @@ func AppendMsg(msg string) error {
 		return err
 	}
 	err = resultElement.SetHtml(msg, sciter.SIH_APPEND_AFTER_LAST)
+	if err != nil {
+		return err
+	}
+	root.Update(true)
+	return nil
+}
+
+func PutKey(id string, key string) error {
+	root, err := w.GetRootElement()
+	if err != nil {
+		return err
+	}
+
+	resultElement, err := root.SelectById(id)
+	if err != nil {
+		return err
+	}
+	err = resultElement.SetText(key)
+	if err != nil {
+		return err
+	}
+	root.Update(true)
+	return nil
+}
+
+func ClearKey() error {
+	root, err := w.GetRootElement()
+	if err != nil {
+		return err
+	}
+
+	resultElement1, err := root.SelectById("pubkey")
+	if err != nil {
+		return err
+	}
+	err = resultElement1.SetText("")
+	if err != nil {
+		return err
+	}
+	resultElement2, err := root.SelectById("prikey")
+	if err != nil {
+		return err
+	}
+	err = resultElement2.SetText("")
 	if err != nil {
 		return err
 	}

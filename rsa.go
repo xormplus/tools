@@ -34,14 +34,18 @@ type RsaEncrypt struct {
 func (this *RsaEncrypt) Encrypt(strMesg string) ([]byte, error) {
 	var inByte []byte
 	var err error
-
-	this.pubkey, err = getPubKey([]byte(this.PubKey))
-	if err != nil {
-		return nil, err
+	if this.EncryptMode == MODE_PUBKEY_ENCRYPT {
+		this.pubkey, err = getPubKey([]byte(this.PubKey))
+		if err != nil {
+			return nil, err
+		}
 	}
-	this.prikey, err = getPriKey([]byte(this.PriKey))
-	if err != nil {
-		return nil, err
+
+	if this.EncryptMode == MODE_PRIKEY_ENCRYPT {
+		this.prikey, err = getPriKey([]byte(this.PriKey))
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	inByte = []byte(strMesg)
