@@ -126,6 +126,14 @@ func setEventHandler(w *window.Window) {
 			DoJson2Struct()
 			return returnCmd
 		})
+
+	w.DefineFunction("xml2struct",
+		func(args ...*sciter.Value) *sciter.Value {
+			returnCmd := sciter.NewValue()
+			returnCmd.Set("cmd", sciter.NewValue("done"))
+			DoXml2Struct()
+			return returnCmd
+		})
 }
 
 func DoGenRsaPerm(rsaEncrypt *RsaEncrypt) {
