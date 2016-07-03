@@ -4,24 +4,25 @@
     <meta charset="utf-8" />
 
     <style>
-		@import url(colorizer.css);
+        @import url(colorizer.css);
         body {
             flow: vertical;
             border-spacing: 8px;
         }
 
-		div {
-			margin: 1;
-		}
+        div {
+            margin: 1;
+        }
 
-		div.xml {
-			margin: 1;
-			flow: horizontal;
-		}
-		div.edit {
-			margin: 1;
-			flow: vertical;
-		}
+        div.xml {
+            margin: 1;
+            flow: horizontal;
+        }
+
+        div.edit {
+            margin: 1;
+            flow: vertical;
+        }
 
         div.list {
             background: white white #EFEFEF #EFEFEF;
@@ -32,7 +33,7 @@
         }
 
         plaintext {
-			margin: 1;
+            margin: 1;
             padding: 0;
             flow: vertical;
             behavior: plaintext;
@@ -66,30 +67,50 @@
             list-marker-color: #fff;
         }
 
-		switch {
-		  font:system;
-		  display:inline-block;
-		  flow:horizontal;
-		  width:max-content;
-		  background: url(theme:button-normal) stretch;
-		  prototype: Switch url(switch.tis);
-		}
+        switch {
+            font: system;
+            display: inline-block;
+            flow: horizontal;
+            width: max-content;
+            background: url(theme:button-normal) stretch;
+            prototype: Switch url(switch.tis);
+        }
 
-		switch > option {
-		  margin:2px 0;
-		  border-right: 1px solid threedshadow;
-		  padding: 3px 8px 4px 8px;
-		  text-shadow:#eee 0px 1px;
-		}
+        switch > option {
+            margin: 2px 0;
+            border-right: 1px solid threedshadow;
+            padding: 3px 8px 4px 8px;
+            text-shadow: #eee 0px 1px;
+        }
 
-		switch > option:first-child { margin-left:2px }
-		switch > option:last-child { border-right: none; margin-right:2px }
-		switch > option:hover { color:brown; }
-		switch > option:checked { background: threedshadow; text-shadow:none; color: highlighttext; }
-		switch:focus > option:checked { background: highlight; }
-		switch:tab-focus > option:checked { outline:1px dotted -2px; }
+        switch > option:first-child {
+            margin-left: 2px
+        }
+
+        switch > option:last-child {
+            border-right: none;
+            margin-right: 2px
+        }
+
+        switch > option:hover {
+            color: brown;
+        }
+
+        switch > option:checked {
+            background: threedshadow;
+            text-shadow: none;
+            color: highlighttext;
+        }
+
+        switch:focus > option:checked {
+            background: highlight;
+        }
+
+        switch:tab-focus > option:checked {
+            outline: 1px dotted -2px;
+        }
     </style>
-    <script type="text/tiscript">
+    <script type="text/javascript">
         var msg = {
             A0001: "&#x8BF7;&#x9009;&#x62E9;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x76EE;&#x5F55;&#x548C;&#x52A0;&#x5BC6;&#x6587;&#x4EF6;&#x8F93;&#x51FA;&#x76EE;&#x5F55;",
             A0002: "&#x8BF7;&#x9009;&#x62E9;&#x4E0D;&#x540C;&#x76EE;&#x5F55;",
@@ -202,94 +223,96 @@
             $(#btn).attributes.remove("disabled");
         };
 
-		$(switch).on("change", function() {
-			if (this.value=="Encrypt") {
-				$(#Encrypt).style["display"] = "block";
-				$(#Xml).style["display"] = "none";
-				$(#Json).style["display"] = "none";
-			}else if (this.value=="Xml"){
-				$(#Encrypt).style["display"] = "none";
-				$(#Xml).style["display"] = "block";
-				$(#Json).style["display"] = "none";
-			}else if (this.value=="Json"){
-				$(#Encrypt).style["display"] = "none";
-				$(#Xml).style["display"] = "none";
-				$(#Json).style["display"] = "block";
-			}
-		});
-
-		$(#convert).onClick = function() {
-			view.json2struct();
-		}
+        $(switch).on("change", function() {
+            if (this.value == "Encrypt") {
+                $(#Encrypt).style["display"] = "block";
+                $(#Xml).style["display"] = "none";
+                $(#Json).style["display"] = "none";
+            } else if (this.value == "Xml") {
+                $(#Encrypt).style["display"] = "none";
+                $(#Xml).style["display"] = "block";
+                $(#Json).style["display"] = "none";
+            } else if (this.value == "Json") {
+                $(#Encrypt).style["display"] = "none";
+                $(#Xml).style["display"] = "none";
+                $(#Json).style["display"] = "block";
+            }
+        });
+        $(#convert).onClick = function() {
+            view.json2struct();
+        }
     </script>
 </head>
 
 <body>
-	<switch>
-	    <option value="Encrypt">xorm&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x52A0;&#x5BC6;</option>
-	    <option value="Xml">json&#x8F6C;struct</option>
-	    <option value="Json">xml&#x8F6C;struct</option>
-	</switch>
-	<div id="Encrypt" style="display:block;height: *;">
-	    <div>
-	        <form>
-	            <div>
-	                <div>&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5B58;&#x653E;&#x76EE;&#x5F55;
-	                <input type="text" name="path1" class="path1" size="80" readonly/><button class="selector1">&#x2026;</button></div>
-					<div>&#x52A0;&#x5BC6;&#x6587;&#x4EF6;&#x8F93;&#x51FA;&#x76EE;&#x5F55;
-	                <input type="text" name="path2" class="path2" size="80" readonly/><button class="selector2">&#x2026;</button></div>
-					&#x52A0;&#x5BC6;&#x7B97;&#x6CD5;
-	                <br/>
-	                <input type="radio" name="radioGroup" value="1" checked="checked">AES</input>
-	                <input type="radio" name="radioGroup" value="2">DES</input>
-	                <input type="radio" name="radioGroup" value="3">TripleDes</input>
-	                <input type="radio" name="radioGroup" value="4">RSA</input>
-	                <input type="radio" name="radioGroup" value="5">&#x751F;&#x6210;RSA&#x79D8;&#x94A5;</input>
-	                <input type="radio" name="radioGroup" value="6">RSA&#x516C;&#x94A5;&#x52A0;&#x5BC6;</input>
-	                <input type="radio" name="radioGroup" value="7">RSA&#x79C1;&#x94A5;&#x52A0;&#x5BC6;</input>
+    <switch>
+        <option value="Encrypt">xorm&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x52A0;&#x5BC6;</option>
+        <option value="Xml">json&#x8F6C;struct</option>
+        <option value="Json">xml&#x8F6C;struct</option>
+    </switch>
+    <div id="Encrypt" style="display:block;height: *;">
+        <div>
+            <form>
+                <div>
+                    <div>&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5B58;&#x653E;&#x76EE;&#x5F55;
+                        <input type="text" name="path1" class="path1" size="80" readonly/><button class="selector1">&#x2026;</button></div>
+                    <div>&#x52A0;&#x5BC6;&#x6587;&#x4EF6;&#x8F93;&#x51FA;&#x76EE;&#x5F55;
+                        <input type="text" name="path2" class="path2" size="80" readonly/><button class="selector2">&#x2026;</button></div>
+                    &#x52A0;&#x5BC6;&#x7B97;&#x6CD5;
+                    <br/>
+                    <input type="radio" name="radioGroup" value="1" checked="checked">AES</input>
+                    <input type="radio" name="radioGroup" value="2">DES</input>
+                    <input type="radio" name="radioGroup" value="3">TripleDes</input>
+                    <input type="radio" name="radioGroup" value="4">RSA</input>
+                    <input type="radio" name="radioGroup" value="5">&#x751F;&#x6210;RSA&#x79D8;&#x94A5;</input>
+                    <input type="radio" name="radioGroup" value="6">RSA&#x516C;&#x94A5;&#x52A0;&#x5BC6;</input>
+                    <input type="radio" name="radioGroup" value="7">RSA&#x79C1;&#x94A5;&#x52A0;&#x5BC6;</input>
 
-	                <input type="button" id="btn" class="selector3" value="&#x52A0;&#x5BC6;" /><br/>
-	            </div>
-	            <div id="pass" style="display:block">&#x5BC6;&#x7801;<input type="text" name="passwd" class="passwd" size="30" /></div>
-	            <div id="bit" style="display:none">
-	                &#x79D8;&#x94A5;&#x957F;&#x5EA6;<input type="text" name="bitwd" class="bitwd" size="8" filter="0~9" maxlength="4" />
-	                <input type="radio" name="rsaMode" value="1" checked="checked">&#x516C;&#x94A5;&#x52A0;&#x5BC6;&#x79C1;&#x94A5;&#x89E3;&#x5BC6;&#x6A21;&#x5F0F;</input>
-	                <input type="radio" name="rsaMode" value="2">&#x79C1;&#x94A5;&#x52A0;&#x5BC6;&#x516C;&#x94A5;&#x89E3;&#x5BC6;&#x6A21;&#x5F0F;</input>
-	            </div>
-	        </form>
-	    </div>
+                    <input type="button" id="btn" class="selector3" value="&#x52A0;&#x5BC6;" /><br/>
+                </div>
+                <div id="pass" style="display:block">&#x5BC6;&#x7801;<input type="text" name="passwd" class="passwd" size="30" /></div>
+                <div id="bit" style="display:none">
+                    &#x79D8;&#x94A5;&#x957F;&#x5EA6;<input type="text" name="bitwd" class="bitwd" size="8" filter="0~9" maxlength="4" />
+                    <input type="radio" name="rsaMode" value="1" checked="checked">&#x516C;&#x94A5;&#x52A0;&#x5BC6;&#x79C1;&#x94A5;&#x89E3;&#x5BC6;&#x6A21;&#x5F0F;</input>
+                    <input type="radio" name="rsaMode" value="2">&#x79C1;&#x94A5;&#x52A0;&#x5BC6;&#x516C;&#x94A5;&#x89E3;&#x5BC6;&#x6A21;&#x5F0F;</input>
+                </div>
+            </form>
+        </div>
 
-		<div id="inputLabel" style="display:none">&#x8BF7;&#x8F93;&#x5165;&#x79D8;&#x94A5;</div>
-		<plaintext id="inputPubkey" style="display:none" tab-size=4></plaintext>
-		<plaintext id="inputPrikey" style="display:none" tab-size=4></plaintext>
+        <div id="inputLabel" style="display:none">&#x8BF7;&#x8F93;&#x5165;&#x79D8;&#x94A5;</div>
+        <plaintext id="inputPubkey" style="display:none" tab-size=4></plaintext>
+        <plaintext id="inputPrikey" style="display:none" tab-size=4></plaintext>
 
 
-	    <div id="result" style="display:true" class="list"></div>
+        <div id="result" style="display:true" class="list"></div>
 
-		<plaintext id="pubkey" style="display:none" tab-size=4 readonly></plaintext>
-		<plaintext id="prikey" style="display:none" tab-size=4 readonly></plaintext>
+        <plaintext id="pubkey" style="display:none" tab-size=4 readonly></plaintext>
+        <plaintext id="prikey" style="display:none" tab-size=4 readonly></plaintext>
 
-	</div>
-	<div id="Xml" style="display:none;height: *;width: *;" class="edit">
-		<div style="width: *;">
-			&#x5305;&#x540D;&#xFF1A;<input type="text" id="package" size="30" />
-			struct&#x7C7B;&#x578B;&#x540D;&#xFF1A;<input type="text" id="structname" size="30" />
-			<input type="button" id="convert" class="selector3" value="&#x8F6C;&#x6362;" />
-		</div>
-		<div style="height: *;width: *;" class="xml">
-			<div style="height: *;width: *;" class="edit">
-				&#x8BF7;&#x8F93;&#x5165;JSON&#x5B57;&#x7B26;&#x4E32;
-				<textarea id="source" style="height: *;width: *;"></textarea>
-			</div>
-			<div style="height: *;width: *;" class="edit">
-				&#x7ED3;&#x679C;
-				<textarea id="xml2struct" style="height: *;width: *;"></textarea>
-			</div>
-		</div>
-	</div>
-	<div id="Json" style="display:none;height: *;">
-		2222222222222
-	</div>
+    </div>
+    <div id="Json" style="display:none;height: *;width: *;" class="edit">
+        <div style="width: *;">
+            &#x5305;&#x540D;&#xFF1A;
+			<input type="text" id="package" size="30" />
+			struct&#x7C7B;&#x578B;&#x540D;&#xFF1A;
+           	<input type="text" id="structname" size="30" />
+            <input type="button" id="convert" class="selector3" value="&#x8F6C;&#x6362;" />
+        </div>
+        <div style="height: *;width: *;" class="json">
+            <div style="height: *;width: *;" class="edit">
+                &#x8BF7;&#x8F93;&#x5165;JSON&#x5B57;&#x7B26;&#x4E32;
+                <!--				<plaintext id="source" style="height: *;width: *;" tab-size=4></plaintext>-->
+                <textarea id="source" style="height: *;width: *;"></textarea>
+            </div>
+            <div style="height: *;width: *;" class="edit">
+                &#x7ED3;&#x679C;
+                <textarea id="json2struct" style="height: *;width: *;"></textarea>
+            </div>
+        </div>
+    </div>
+    <div id="Json" style="display:none;height: *;">
+        2222222222222
+    </div>
 </body>
 
 </html>
