@@ -33,6 +33,8 @@ func main() {
 	w.SetTitle("xorm tools")
 
 	w.LoadFile("tools.html")
+
+	//	w.LoadFile("show-master-css.htm")
 	//	err = w.LoadHtml(indexhtml, "/")
 	if err != nil {
 		log.Fatal("Create Window Error: ", err)
@@ -46,7 +48,7 @@ func main() {
 
 func setEventHandler(w *window.Window) {
 	var err error
-	w.DefineFunction("getDir",
+	w.DefineFunction("encrypt",
 		func(args ...*sciter.Value) *sciter.Value {
 			var bits int
 
@@ -114,6 +116,14 @@ func setEventHandler(w *window.Window) {
 				DoRsaModePrikeyEncrypt(rsa)
 			}
 
+			return returnCmd
+		})
+
+	w.DefineFunction("json2struct",
+		func(args ...*sciter.Value) *sciter.Value {
+			returnCmd := sciter.NewValue()
+			returnCmd.Set("cmd", sciter.NewValue("done"))
+			DoJson2Struct()
 			return returnCmd
 		})
 }
