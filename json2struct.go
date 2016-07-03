@@ -1,11 +1,9 @@
 package main
 
 import (
-	"log"
 	"strings"
 
 	"github.com/ChimeraCoder/gojson"
-	//	"github.com/oskca/sciter"
 )
 
 const json = "json2struct"
@@ -34,7 +32,7 @@ func DoJson2Struct() {
 		return
 	}
 	packageStr, err := resultElement.GetValue()
-	log.Println(packageStr)
+
 	if err != nil {
 		PrintResult(json, err.Error())
 		return
@@ -45,7 +43,7 @@ func DoJson2Struct() {
 		return
 	}
 	structName, err := resultElement.GetValue()
-	log.Println(structName)
+
 	if err != nil {
 		PrintResult(json, err.Error())
 		return
