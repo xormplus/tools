@@ -8,64 +8,66 @@ import (
 	//	"github.com/oskca/sciter"
 )
 
+const json = "json2struct"
+
 func DoJson2Struct() {
 
 	root, err := w.GetRootElement()
 	if err != nil {
-		PrintResult(err.Error())
+		PrintResult(json, err.Error())
 		return
 	}
 	resultElement, err := root.SelectById("source")
 	if err != nil {
-		PrintResult(err.Error())
+		PrintResult(json, err.Error())
 		return
 	}
 	jsonStr, err := resultElement.GetValue()
 	if err != nil {
-		PrintResult(err.Error())
+		PrintResult(json, err.Error())
 		return
 	}
 	resultElement, err = root.SelectById("package")
 
 	if err != nil {
-		PrintResult(err.Error())
+		PrintResult(json, err.Error())
 		return
 	}
 	packageStr, err := resultElement.GetValue()
 	log.Println(packageStr)
 	if err != nil {
-		PrintResult(err.Error())
+		PrintResult(json, err.Error())
 		return
 	}
 	resultElement, err = root.SelectById("structname")
 	if err != nil {
-		PrintResult(err.Error())
+		PrintResult(json, err.Error())
 		return
 	}
 	structName, err := resultElement.GetValue()
 	log.Println(structName)
 	if err != nil {
-		PrintResult(err.Error())
+		PrintResult(json, err.Error())
 		return
 	}
-	json := strings.NewReader(jsonStr.String())
-	b, err := json2struct.Generate(json, structName.String(), packageStr.String())
+	j := strings.NewReader(jsonStr.String())
+	b, err := json2struct.Generate(j, structName.String(), packageStr.String())
 
 	if err != nil {
-		PrintResult(err.Error())
+		PrintResult(json, err.Error())
 		return
 	}
 
-	PrintResult(string(b))
+	PrintResult(json, string(b))
 }
 
-func PrintResult(msg string) error {
+func PrintResult(id, msg string) error {
 	root, err := w.GetRootElement()
 	if err != nil {
 		return err
 	}
 
-	resultElement, err := root.SelectById("xml2struct")
+	resultElement, err := root.SelectById(id)
 	if err != nil {
 		return err
 	}
